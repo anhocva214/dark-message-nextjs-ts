@@ -31,7 +31,7 @@ const MessagePage = () => {
 
     const production = "https://dark-message.herokuapp.com";
     const development = "http://localhost:20721"
-    const socket = io(production, {
+    const socket = io(development, {
         withCredentials: true,
     });
 
