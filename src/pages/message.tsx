@@ -49,7 +49,7 @@ const MessagePage = () => {
                 socket.emit("join_into_world", {id, username: text, noti: true});
                 localStorage.setItem("world_group", "true")
             }
-            
+
             set_username(text);
             let text_arr = text.split(" ");
             if (text_arr.length == 1) {
@@ -193,7 +193,7 @@ const MessagePage = () => {
 
                         </div>
                     </div>
-                    <div className="col-lg-9 col-md-8 col-sm-8 p-0 message-container">
+                    <div className="col-lg-9 col-md-8 col-sm-8 p-0 message-container pt-5">
                         <div className="message-content">
                             <div className="head">
                                 <div className="username">Thế giới</div>
