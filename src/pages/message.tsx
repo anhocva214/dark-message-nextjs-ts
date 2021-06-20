@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import AuthLayout from "@/layouts/Auth";
 import { ListMessageToString, ListMessageToArray, UsernameToAvatar } from "@/functions/String";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import Router from 'next/router';
 
 // Reqiest
 import {
@@ -30,7 +31,7 @@ const MessagePage = () => {
 
     const production = "https://dark-message.herokuapp.com";
     const development = "http://localhost:20721"
-    const socket = io(production, {
+    const socket = io(development, {
         withCredentials: true,
     });
 
@@ -49,7 +50,12 @@ const MessagePage = () => {
 
             if (localStorage.getItem("world_group") != "true"){
                 socket.emit("join_into_world", {id, username: text, noti: true});
-                localStorage.setItem("world_group", "true")
+                localStorage.setItem("world_group", "true");
+
+                // setTimeout(() => {
+                //     // localStorage.removeItem("list_message");
+                //     Router.reload()
+                // }, 1000);
             }
 
             set_username(text);
@@ -60,6 +66,8 @@ const MessagePage = () => {
             else {
                 set_text_avatar(text_arr[0][0] + text_arr[text_arr.length - 1][0])
             }
+
+            
         }
 
         // document.addEventListener("visibilitychange", () => {
@@ -138,24 +146,34 @@ const MessagePage = () => {
     const SetListMessage = (data: any) => {
         // console.log("server to: ", data)
         // set_list_message([data])
+        
+        // console.log(temp)
+
         let temp = _list_message;
-        if (temp.length == 0){
+        if (temp.length == 0) {
             temp = ListMessageToArray(localStorage.getItem("list_message"))
         }
-        // console.log(temp)
         temp.push(data);
-        
+
+        if (data.id == _username && data.noti == true){
+            console.log("pop")
+            temp.pop();
+        }
+
+
+        temp = [...temp]
+
         let temp_ = _list_message;
         temp_ = [...temp];
 
         Function_1(temp_)
 
-
-        set_list_message( temp_)
+        set_list_message(temp_)
         set_send_count(_send_count => _send_count + 1)
 
         let str = ListMessageToString(temp);
         localStorage.setItem("list_message", str);
+
 
         // console.log(_list_message)
     }
@@ -239,7 +257,7 @@ const MessagePage = () => {
                                                         {
                                                             typeof value?.message == "object" ? value?.message.map((msg, i) => (
                                                                 <div key={i} className="message">{msg}</div>
-                                                            )) : (<div className="message">{value?.message}</div>)
+                                                            )) : (<div key={value.id} className="message">{value?.message}</div>)
                                                         }
                                                     </div>
                                                 </div>

@@ -39,11 +39,15 @@ export const ListMessageToArray = (data: any) => {
 }
 
 export const UsernameToAvatar = (text: string) => {
-    let text_arr = text.split(" ");
-    if (text_arr.length == 1) {
-        return text_arr[0][0]
+    if (text.trim().length > 0){
+        let text_arr = text.split(" ");
+        if (text_arr.length == 1) {
+            return text_arr[0][0]
+        }
+        else {
+            return text_arr[0][0] + text_arr[text_arr.length - 1][0]
+        }
     }
-    else {
-        return text_arr[0][0] + text_arr[text_arr.length - 1][0]
-    }
+    else return ""
+    
 }
