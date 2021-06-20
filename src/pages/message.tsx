@@ -193,7 +193,7 @@ const MessagePage = () => {
 
                         </div>
                     </div>
-                    <div className="col-lg-9 col-md-8 col-sm-8 p-0 message-container pt-5">
+                    <div className="col-lg-9 col-md-8 col-sm-8 p-0 message-container pt-3">
                         <div className="message-content">
                             <div className="head">
                                 <div className="username">Thế giới</div>
