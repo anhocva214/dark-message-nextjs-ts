@@ -45,7 +45,7 @@ const MessagePage = () => {
         set_id(id);
         if (!!text) {
 
-            if (!localStorage.getItem("world_group")){
+            if (localStorage.getItem("world_group") != "true"){
                 socket.emit("join_into_world", {id, username: text, noti: true});
                 localStorage.setItem("world_group", "true")
             }
