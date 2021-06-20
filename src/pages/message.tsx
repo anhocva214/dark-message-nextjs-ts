@@ -30,7 +30,7 @@ const MessagePage = () => {
 
     const production = "https://dark-message.herokuapp.com";
     const development = "http://localhost:20721"
-    const socket = io(production, {
+    const socket = io(development, {
         withCredentials: true,
     });
 
@@ -203,7 +203,7 @@ const MessagePage = () => {
                             <div className="head">
                                 <div className="username">Thế giới</div>
                             </div>
-                            <div id="chat-content" className="chat-content" style={{ height: _win_height - 36 }}>
+                            <div id="chat-content" className="chat-content" >
                                 {
                                     _list_message.length > 0 ? _list_message.map((value, index) => {
 
