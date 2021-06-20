@@ -21,6 +21,7 @@ const AuthLayout = (props: props)=>{
         // console.log(check_token)
         let username = localStorage.getItem("username");
         let id = localStorage.getItem("id");
+        
         if (!!username && !!id){
             // Router.push("/message")
             set_check_auth(true)

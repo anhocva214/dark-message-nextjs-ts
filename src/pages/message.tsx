@@ -38,15 +38,18 @@ const MessagePage = () => {
         let text = localStorage.getItem("username");
         let id = localStorage.getItem("id");
 
-        if (!localStorage.getItem("world_group")){
-            socket.emit("join_into_world", {id, username: text, noti: true});
-            localStorage.setItem("world_group", "true")
-        }
+        
         socket.on("join_into_world", Set_message)
 
        
         set_id(id);
         if (!!text) {
+
+            if (!localStorage.getItem("world_group")){
+                socket.emit("join_into_world", {id, username: text, noti: true});
+                localStorage.setItem("world_group", "true")
+            }
+            
             set_username(text);
             let text_arr = text.split(" ");
             if (text_arr.length == 1) {
