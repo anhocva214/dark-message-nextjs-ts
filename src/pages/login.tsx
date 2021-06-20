@@ -18,7 +18,9 @@ const LoginPage = ()=>{
 
     const Start = (e)=>{
         console.log("click");
+        localStorage.clear();
         localStorage.setItem("list_message", `{"id":null}`)
+
         e.preventDefault();
         if (_username.length > 3){
             localStorage.setItem("username", _username);
