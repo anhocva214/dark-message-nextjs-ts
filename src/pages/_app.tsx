@@ -23,7 +23,7 @@ function App({ Component, pageProps }: AppProps) {
         <meta name="description" content={"personal manege"} />
         <meta name="author" content={"anho"} />
         <title>Dark MS</title>
-        <link rel="icon" href="/img/favicon.jpg" type="image/x-icon" />
+        <link rel="icon" href="/img/favicon.png" type="image/x-icon" />
         <link rel="shortcut icon" href="/img/favicon.jpg" type="image/x-icon" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"

@@ -28,7 +28,7 @@ const MessagePage = () => {
 
     const [_send_count, set_send_count] = useState(0)
 
-    const socket = io("http://localhost:20721", {
+    const socket = io("https://dark-message.herokuapp.com", {
         withCredentials: true,
     });
 
