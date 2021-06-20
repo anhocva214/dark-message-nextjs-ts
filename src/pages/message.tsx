@@ -21,14 +21,16 @@ const MessagePage = () => {
 
     const [_text_avatar, set_text_avatar] = useState("");
     const [_username, set_username] = useState("");
-    const [_message, set_message] = useState("");
+    // const [_message, set_message] = useState("");
     const [_id, set_id] = useState("")
     const [_list_message, set_list_message] = useState([])
     const [_win_height, set_win_height] = useState(100);
 
     const [_send_count, set_send_count] = useState(0)
 
-    const socket = io("https://dark-message.herokuapp.com", {
+    const production = "https://dark-message.herokuapp.com";
+    const development = "http://localhost:20721"
+    const socket = io(production, {
         withCredentials: true,
     });
 
@@ -39,7 +41,7 @@ const MessagePage = () => {
         let id = localStorage.getItem("id");
 
         
-        socket.on("join_into_world", Set_message)
+        socket.on("join_into_world", SetListMessage)
 
        
         set_id(id);
@@ -80,16 +82,19 @@ const MessagePage = () => {
 
     const SendMessage = async (e: any) => {
         e.preventDefault();
-        if (_message.length > 0) {
+        // console.log(e.target[0].value)
+        let message = e.target[0].value.trim();
+        if (message.length > 0) {
             let d = new Date();
             let message_box = {
                 id: _id,
                 username: _username,
-                message: [_message.trim()],
+                message: [message],
                 time: d.getTime()
             }
 
-            set_message("")
+            // set_message("")
+            e.target[0].value = "";
 
             
             socket.emit("server_message_global", message_box)
@@ -99,7 +104,7 @@ const MessagePage = () => {
 
 
     useEffect(() => {
-        socket.on("client_message_global", Set_message)
+        socket.on("client_message_global", SetListMessage)
     }, [])
 
 
@@ -130,7 +135,7 @@ const MessagePage = () => {
         
     }
 
-    const Set_message = (data: any) => {
+    const SetListMessage = (data: any) => {
         // console.log("server to: ", data)
         // set_list_message([data])
         let temp = _list_message;
@@ -140,13 +145,13 @@ const MessagePage = () => {
         // console.log(temp)
         temp.push(data);
         
-        // let temp_ = _list_message;
-        // temp_ = [...temp];
+        let temp_ = _list_message;
+        temp_ = [...temp];
 
-        Function_1(temp)
+        Function_1(temp_)
 
 
-        set_list_message( temp)
+        set_list_message( temp_)
         set_send_count(_send_count => _send_count + 1)
 
         let str = ListMessageToString(temp);
@@ -255,13 +260,13 @@ const MessagePage = () => {
                                 </div> */}
                             </div>
                             <form onSubmit={(e) => SendMessage(e)} className="input-chat-text">
-                                <input value={_message} onChange={(e) => set_message(e.target.value)} type="text" placeholder="Nhập tin nhắn..." />
+                                <input name="message" type="text" placeholder="Nhập tin nhắn..." />
                                 <div className="reaction-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} fill="currentColor" className="bi bi-emoji-smile-fill" viewBox="0 0 16 16">
                                         <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zM4.285 9.567a.5.5 0 0 1 .683.183A3.498 3.498 0 0 0 8 11.5a3.498 3.498 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.498 4.498 0 0 1 8 12.5a4.498 4.498 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683zM10 8c-.552 0-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5S10.552 8 10 8z" />
                                     </svg>
                                 </div>
-                                <button className="btn-submit" style={{ backgroundColor: "#0000", border: 0, outline: 0 }}>
+                                <button type="submit" className="btn-submit" style={{ backgroundColor: "#0000", border: 0, outline: 0 }}>
                                     <i className="fa fa-paper-plane" aria-hidden="true" />
                                 </button>
                             </form>
