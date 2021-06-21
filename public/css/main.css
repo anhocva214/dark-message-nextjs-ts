@@ -235,16 +235,20 @@
 }
 
 .message-page .message-container .message-content .chat-content .card-chat .box {
-  display: inline-block;
   margin-left: 35px;
-  background-color: #3e3e3e;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 0 10px;
 }
 
 .message-page .message-container .message-content .chat-content .card-chat .box .message {
   font-size: .9rem;
+  background-color: #3e3e3e;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 0 10px 10px;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  display: block;
+  margin-bottom: 4px;
 }
 
 .message-page .message-container .message-content .chat-content .card-chat.me {
@@ -269,7 +273,20 @@
 .message-page .message-container .message-content .chat-content .card-chat.me .box {
   margin-left: 0;
   margin-right: 35px;
-  border-radius: 10px 0px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+}
+
+.message-page .message-container .message-content .chat-content .card-chat.me .box .message {
+  border-radius: 10px 0px 10px 10px;
 }
 
 .message-page .message-container .message-content .chat-content .chat-noti {
