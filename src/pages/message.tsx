@@ -30,6 +30,10 @@ const MessagePage = () => {
 
     const [_send_count, set_send_count] = useState(0)
 
+    const [_autido_join, set_autido_join] = useState(typeof Audio !== "undefined" && new Audio("/mp3/join.mp3"))
+    const [_audio_new_message, set_audio_new_message] = useState(typeof Audio !== "undefined" && new Audio("/mp3/new_message.mp3"))
+    const [_status, set_status] = useState(true);
+
     const production = "https://dark-message.herokuapp.com";
     const development = "http://localhost:20721"
     const socket = io(production, {
@@ -46,7 +50,7 @@ const MessagePage = () => {
             let data_old = localStorage.getItem("list_message");
             if (data_old.length > 0){
                 let temp = ListMessageToArray(data_old);
-                console.log("temp before: ", temp)
+                // console.log("temp before: ", temp)
                 set_list_message(temp);
                 set_send_count(_send_count => _send_count + 1);
             }
@@ -54,7 +58,14 @@ const MessagePage = () => {
        
 
 
-        socket.on("join_into_world", SetListMessage)
+        socket.on("join_into_world", (data)=>{
+            SetListMessage(data);
+            // console.log(data)
+            // console.log(data.id, " - ", localStorage.getItem("id"))
+            if (data.id != localStorage.getItem("id")){
+                _autido_join.play();
+            }
+        })
 
 
         set_id(id);
@@ -82,13 +93,15 @@ const MessagePage = () => {
 
         }
 
-        // document.addEventListener("visibilitychange", () => {
-        //     if (document.visibilityState == "visible") {
-        //         soc.emit("loggout", "onl")
-        //     } else {
-        //         soc.emit("loggout", "off")
-        //     }
-        //   })
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState == "visible") {
+                set_status(true);
+                // soc.emit("loggout", "onl")
+            } else {
+                // soc.emit("loggout", "off")
+                set_status(false);
+            }
+        })
 
         set_win_height(window.innerHeight)
 
@@ -101,6 +114,7 @@ const MessagePage = () => {
     })
 
     const SendMessage = async (e: any) => {
+
         e.preventDefault();
         // console.log(e.target[0].value)
         let message = e.target[0].value.trim();
@@ -179,6 +193,10 @@ const MessagePage = () => {
 
         // console.log(temp)
 
+        if (!!data?.id && data.noti != true && data.id != localStorage.getItem("id") && _status == false){
+            _audio_new_message.play();
+        }
+
         let temp :any = [];
         // console.log("temp ", temp)
         let text = localStorage.getItem("list_message");
@@ -232,7 +250,9 @@ const MessagePage = () => {
         localStorage.setItem("list_message", str);
     }, [_send_count])
 
-
+    // useEffect(() => {
+    //     _autido.play();
+    // }, [])
 
     return (
         <AuthLayout>
