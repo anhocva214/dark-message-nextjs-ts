@@ -189,7 +189,7 @@
 }
 
 .message-page .message-container .message-content .chat-content {
-  height: calc(100vh - 36px);
+  height: calc(100vh - 50px);
   overflow-y: auto;
   padding-top: 20px;
   padding-bottom: 10px;

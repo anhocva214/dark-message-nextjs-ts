@@ -26,6 +26,7 @@ const MessagePage = () => {
     const [_id, set_id] = useState("")
     const [_list_message, set_list_message] = useState([])
     const [_win_height, set_win_height] = useState(100);
+    const [_print_list_message, set_print_list_message] = useState([])
 
     const [_send_count, set_send_count] = useState(0)
 
@@ -41,15 +42,26 @@ const MessagePage = () => {
         let text = localStorage.getItem("username");
         let id = localStorage.getItem("id");
 
-        
+        try{
+            let data_old = localStorage.getItem("list_message");
+            if (data_old.length > 0){
+                let temp = ListMessageToArray(data_old);
+                console.log("temp before: ", temp)
+                set_list_message(temp);
+                set_send_count(_send_count => _send_count + 1);
+            }
+        }catch(e){}
+       
+
+
         socket.on("join_into_world", SetListMessage)
 
-       
+
         set_id(id);
         if (!!text) {
 
-            if (localStorage.getItem("world_group") != "true"){
-                socket.emit("join_into_world", {id, username: text, noti: true});
+            if (localStorage.getItem("world_group") != "true") {
+                socket.emit("join_into_world", { id, username: text, noti: true });
                 localStorage.setItem("world_group", "true");
 
                 // setTimeout(() => {
@@ -67,7 +79,7 @@ const MessagePage = () => {
                 set_text_avatar(text_arr[0][0] + text_arr[text_arr.length - 1][0])
             }
 
-            
+
         }
 
         // document.addEventListener("visibilitychange", () => {
@@ -85,7 +97,7 @@ const MessagePage = () => {
     useEffect(() => {
         var chatContent = document.getElementById("chat-content");
         if (!!chatContent)
-        chatContent.scrollTop = chatContent.scrollHeight
+            chatContent.scrollTop = chatContent.scrollHeight
     })
 
     const SendMessage = async (e: any) => {
@@ -104,7 +116,7 @@ const MessagePage = () => {
             // set_message("")
             e.target[0].value = "";
 
-            
+
             socket.emit("server_message_global", message_box)
         }
 
@@ -116,67 +128,110 @@ const MessagePage = () => {
     }, [])
 
 
-    const Function_1 = (arr)=>{
-        try{
-            // let arr = [...arr_1];
-            let len = arr.length;
-            let i = 0;
-            while (i < len-1){
-                // console.log(i, len)
-                if (arr[i].id == null || !!arr[i].noti) i++;
-                // console.log(arr[i].id, arr[i+1].id)
-                if (arr[i].id == arr[i+1].id){
-                    // console.log([...arr[i].message, arr[i+1].message])
-                    arr[i+1].message = [...arr[i].message, arr[i+1].message];
-                    arr[i].id = null;
-                    // arr.shift();
-                    // len--;
-                }
-                i++;
+    const Function_1 = (arr_json : any) => {
+        // console.log("arr_json: ", JSON.stringify(arr_json))
+        try {
+            // let arr_text = text.split("*");
+            // let arr_json = [];
+            // arr_text.forEach(value => {
+            //     arr_json.push(JSON.parse(value))
+            // })
 
+            // console.log(arr_json)
+
+            let i = 0;
+            let len = arr_json.length;
+            let result = [];
+
+            while (i < len - 1) {
+                if (arr_json[i]?.noti){
+                    result.push(arr_json[i])
+                }
+                else if (arr_json[i].id == arr_json[i + 1].id && arr_json[i].id != null) {
+                    let json = {
+                        id: arr_json[i].id,
+                        username: arr_json[i].username,
+                        message: [...arr_json[i].message, ...arr_json[i + 1].message],
+                        time: arr_json[i + 1].time
+                    }
+                    arr_json[i + 1] = { ...json }
+                }
+                else if (arr_json[i].id) {
+                    // console.log(arr_json[i])
+                    result.push(arr_json[i])
+                }
+
+                i++;
             }
-    
-            // console.log(arr)
-            // return arr;
+            result.push(arr_json[len-1])
+
+
+            // console.log(result)
+            return result
         }
-        catch(e){console.log(e)}
-        
+        catch (e) { console.log(e) }
+
     }
 
     const SetListMessage = (data: any) => {
         // console.log("server to: ", data)
         // set_list_message([data])
-        
+
         // console.log(temp)
 
-        let temp = _list_message;
-        if (temp.length == 0) {
-            temp = ListMessageToArray(localStorage.getItem("list_message"))
+        let temp :any = [];
+        // console.log("temp ", temp)
+        let text = localStorage.getItem("list_message");
+
+        if (text.length > 0) {
+            temp = ListMessageToArray(text);
         }
+       
         temp.push(data);
 
-        if (data.id == _username && data.noti == true){
-            console.log("pop")
-            temp.pop();
-        }
+        // if (data.id == _username && data.noti == true) {
+        //     console.log("pop")
+        //     temp.pop();
+        // }
 
 
-        temp = [...temp]
+        // temp = [...temp]
 
-        let temp_ = _list_message;
-        temp_ = [...temp];
+        // let temp_ = _list_message;
+        // temp_ = [...temp];
 
-        Function_1(temp_)
+        // if (_list_message.length > 0){
+        //     Function_1(temp)
+        // }
 
-        set_list_message(temp_)
+        // Function_1(temp)
+
+
+
+        set_list_message(temp)
         set_send_count(_send_count => _send_count + 1)
 
-        let str = ListMessageToString(temp);
-        localStorage.setItem("list_message", str);
+        // let str = ListMessageToString(temp);
+        // localStorage.setItem("list_message", str);
 
 
         // console.log(_list_message)
     }
+
+    useEffect(() => {
+        console.log("_list_message: ", _list_message)
+        let t = [..._list_message];
+        // t.pop()
+        // console.log(
+        // Function_1(t)
+        // )
+        // set_list_message(Function_1(t))
+        let temp = Function_1(t);
+        set_print_list_message(temp)
+        let str = ListMessageToString(temp);
+        localStorage.setItem("list_message", str);
+    }, [_send_count])
+
 
 
     return (
@@ -223,12 +278,12 @@ const MessagePage = () => {
                             </div>
                             <div id="chat-content" className="chat-content" >
                                 {
-                                    _list_message.length > 0 ? _list_message.map((value, index) => {
+                                    _print_list_message.length > 0 ? _print_list_message.map((value, index) => {
 
-                                        if (value?.noti == true){
+                                        if (value?.noti == true) {
                                             return (<div className="chat-noti">{value?.username} joined the group</div>)
                                         }
-                                        else if (value.id == _id) {
+                                        else if (value?.id == _id) {
                                             return (
                                                 <div key={index} className="card-chat me">
                                                     <div className="user">
@@ -246,7 +301,7 @@ const MessagePage = () => {
                                                 </div>
                                             )
                                         }
-                                        else if (!!value.id) 
+                                        else if (!!value?.id)
                                             return (
                                                 <div key={index} className="card-chat">
                                                     <div className="user">
