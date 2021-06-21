@@ -219,7 +219,7 @@ const MessagePage = () => {
     }
 
     useEffect(() => {
-        console.log("_list_message: ", _list_message)
+        // console.log("_list_message: ", _list_message)
         let t = [..._list_message];
         // t.pop()
         // console.log(
