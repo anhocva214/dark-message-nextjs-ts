@@ -37,7 +37,7 @@ const AuthLayout = (props: props)=>{
 
     useEffect(()=>{
         AuthUser();
-        console.log("version 1.0.7")
+        console.log("version 1.0.8")
     }, [])
 
 

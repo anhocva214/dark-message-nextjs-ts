@@ -5,12 +5,13 @@ import AuthLayout from "@/layouts/Auth";
 import { ListMessageToString, ListMessageToArray, UsernameToAvatar } from "@/functions/String";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Router from 'next/router';
+import ReactAudioPlayer from 'react-audio-player';
+import useSound from 'use-sound'
 
 // Reqiest
 import {
     RequestSendMessage,
 } from '@/constants/Request'
-
 
 
 
@@ -30,13 +31,19 @@ const MessagePage = () => {
 
     const [_send_count, set_send_count] = useState(0)
 
-    const [_autido_join, set_autido_join] = useState(typeof Audio !== "undefined" && new Audio("/mp3/join.mp3"))
-    const [_audio_new_message, set_audio_new_message] = useState(typeof Audio !== "undefined" && new Audio("/mp3/new_message.mp3"))
     const [_status, set_status] = useState(true);
+    const [play_sound_new_message, {stop}] = useSound(
+        '/mp3/new_message.mp3',
+        { volume: 1 }
+      );
+      const [play_sound_new_join] = useSound(
+        '/mp3/join.mp3',
+        { volume: 1 }
+      );
 
     const production = "https://dark-message.herokuapp.com";
     const development = "http://localhost:20721"
-    const socket = io(production, {
+    const socket = io(development, {
         withCredentials: true,
     });
 
@@ -45,6 +52,7 @@ const MessagePage = () => {
         // socket.on("connection").;
         let text = localStorage.getItem("username");
         let id = localStorage.getItem("id");
+
 
         try{
             let data_old = localStorage.getItem("list_message");
@@ -56,24 +64,22 @@ const MessagePage = () => {
             }
         }catch(e){}
        
-        set_id(id => id);
         // set_send_count(_send_count => _send_count + 1);
-
-
         socket.on("join_into_world", (data)=>{
             SetListMessage(data);
             // console.log(data)
             // console.log(data.id, " - ", localStorage.getItem("id"))
-            _autido_join.pause();
-            _autido_join.currentTime = 0;
-            // console.log(data.id != localStorage.getItem("id"))
-            // console.log(data.id, " - ", localStorage.getItem("id"))
+            // _autido_join.pause();
+            // _autido_join.currentTime = 0;
+            // // console.log(data.id != localStorage.getItem("id"))
+            // // console.log(data.id, " - ", localStorage.getItem("id"))
             if (data.id != localStorage.getItem("id")){
-                _autido_join.play();
+                ref_new_join?.current.click();
+
             }
         })
 
-
+        set_id(id => id);
         if (!!text) {
 
             if (localStorage.getItem("world_group") != "true") {
@@ -111,6 +117,7 @@ const MessagePage = () => {
 
         set_win_height(window.innerHeight)
 
+
     }, [])
 
     useEffect(() => {
@@ -127,7 +134,7 @@ const MessagePage = () => {
         if (message.length > 0) {
             let d = new Date();
             let message_box = {
-                id: _id,
+                id: localStorage.getItem("id"),
                 username: _username,
                 message: [message],
                 time: d.getTime()
@@ -142,6 +149,7 @@ const MessagePage = () => {
 
     }
 
+    
 
     useEffect(() => {
         socket.on("client_message_global", SetListMessage)
@@ -193,25 +201,32 @@ const MessagePage = () => {
 
     }
 
-    const SetListMessage = (data: any) => {
+    const ref_new_message = useRef<HTMLDivElement>(null);
+    const ref_new_join = useRef<HTMLDivElement>(null);
+
+
+    const SetListMessage = async (data: any) => {
         // console.log("server to: ", data)
         // set_list_message([data])
 
         // console.log(temp)
 
-        _audio_new_message.pause();
-        _audio_new_message.currentTime = 0;
+        // _audio_new_message.muted = true;
+        // _audio_new_message.pause();
+        // _audio_new_message.currentTime = 0;
 
+
+        
         // console.log(localStorage.getItem("status") == "off")
         // console.log("!!data?.id", !!data?.id);
         // console.log("!data?.noti", !data?.noti)
         // console.log(data.id != localStorage.getItem("id"))
         if (!!data?.id && !data?.noti && data.id != localStorage.getItem("id") && localStorage.getItem("status") == "off"){
-            _audio_new_message.play();
-            // _audio_new_message.remove();
+            console.log("new message")
+            ref_new_message?.current.click();
         }
 
-        // _audio_new_message.play();
+
 
 
         let temp :any = [];
@@ -267,12 +282,15 @@ const MessagePage = () => {
         localStorage.setItem("list_message", str);
     }, [_send_count])
 
-    // useEffect(() => {
-    //     _autido.play();
-    // }, [])
+    
+
 
     return (
         <AuthLayout>
+            <div ref={ref_new_join} className="btn btn-primary d-none" onClick={()=>play_sound_new_join()}> click </div>
+
+            <div ref={ref_new_message} className="btn btn-primary d-none" onClick={()=>play_sound_new_message()}> click </div>
+            
             <main className="message-page">
                 <div className="row">
                     <div className="col-lg-3 col-md-4 col-sm-4 p-0">
@@ -320,7 +338,7 @@ const MessagePage = () => {
                                         if (value?.noti == true) {
                                             return (<div key={index} className="chat-noti">{value?.username} joined the group</div>)
                                         }
-                                        else if (value?.id == _id) {
+                                        else if (value?.id == localStorage.getItem("id")) {
                                             return (
                                                 <div key={index} className="card-chat me">
                                                     <div className="user">

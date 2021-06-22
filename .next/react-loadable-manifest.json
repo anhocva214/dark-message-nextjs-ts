@@ -4,5 +4,11 @@
     "files": [
       "static/chunks/node_modules_next_dist_client_dev_noop_js.js"
     ]
+  },
+  "../../node_modules/use-sound/dist/use-sound.esm.js -> howler": {
+    "id": "./node_modules/howler/dist/howler.js",
+    "files": [
+      "static/chunks/vendors-node_modules_howler_dist_howler_js.js"
+    ]
   }
 }
