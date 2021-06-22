@@ -36,7 +36,7 @@ const MessagePage = () => {
 
     const production = "https://dark-message.herokuapp.com";
     const development = "http://localhost:20721"
-    const socket = io(production, {
+    const socket = io(development, {
         withCredentials: true,
     });
 
@@ -95,11 +95,12 @@ const MessagePage = () => {
 
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState == "visible") {
-                set_status(true);
+                localStorage.setItem("status", "onl")
                 // soc.emit("loggout", "onl")
             } else {
                 // soc.emit("loggout", "off")
-                set_status(false);
+                localStorage.setItem("status", "off")
+
             }
         })
 
@@ -193,9 +194,20 @@ const MessagePage = () => {
 
         // console.log(temp)
 
-        if (!!data?.id && data.noti != true && data.id != localStorage.getItem("id") && _status == false){
+        _audio_new_message.pause();
+        _audio_new_message.currentTime = 0;
+
+        console.log(localStorage.getItem("status") == "off")
+        // console.log("!!data?.id", !!data?.id);
+        // console.log("!data?.noti", !data?.noti)
+        // console.log(data.id != localStorage.getItem("id"))
+        if (!!data?.id && !data?.noti && data.id != localStorage.getItem("id") && localStorage.getItem("status") == "off"){
             _audio_new_message.play();
+            // _audio_new_message.remove();
         }
+
+        // _audio_new_message.play();
+
 
         let temp :any = [];
         // console.log("temp ", temp)
@@ -301,7 +313,7 @@ const MessagePage = () => {
                                     _print_list_message.length > 0 ? _print_list_message.map((value, index) => {
 
                                         if (value?.noti == true) {
-                                            return (<div className="chat-noti">{value?.username} joined the group</div>)
+                                            return (<div key={index} className="chat-noti">{value?.username} joined the group</div>)
                                         }
                                         else if (value?.id == _id) {
                                             return (
@@ -315,7 +327,7 @@ const MessagePage = () => {
                                                         {
                                                             typeof value?.message == "object" ? value?.message.map((msg, i) => (
                                                                 <div key={i} className="message">{msg}</div>
-                                                            )) : (<div className="message">{value?.message}</div>)
+                                                            )) : (<div key={index} className="message">{value?.message}</div>)
                                                         }
                                                     </div>
                                                 </div>
