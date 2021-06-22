@@ -56,11 +56,17 @@ const MessagePage = () => {
             }
         }catch(e){}
        
+        set_id(id => id);
+        // set_send_count(_send_count => _send_count + 1);
 
 
         socket.on("join_into_world", (data)=>{
             SetListMessage(data);
             // console.log(data)
+            // console.log(data.id, " - ", localStorage.getItem("id"))
+            _autido_join.pause();
+            _autido_join.currentTime = 0;
+            // console.log(data.id != localStorage.getItem("id"))
             // console.log(data.id, " - ", localStorage.getItem("id"))
             if (data.id != localStorage.getItem("id")){
                 _autido_join.play();
@@ -68,7 +74,6 @@ const MessagePage = () => {
         })
 
 
-        set_id(id);
         if (!!text) {
 
             if (localStorage.getItem("world_group") != "true") {
@@ -197,7 +202,7 @@ const MessagePage = () => {
         _audio_new_message.pause();
         _audio_new_message.currentTime = 0;
 
-        console.log(localStorage.getItem("status") == "off")
+        // console.log(localStorage.getItem("status") == "off")
         // console.log("!!data?.id", !!data?.id);
         // console.log("!data?.noti", !data?.noti)
         // console.log(data.id != localStorage.getItem("id"))
