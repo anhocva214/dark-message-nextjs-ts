@@ -1,5 +1,4 @@
 import React, { ReactNode, useEffect , useState} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
 import Router from 'next/router';
 import {useAppDispatch, useAppSelector} from '@/store/hooks'
 import {PuffLoader} from 'react-spinners'; 
@@ -25,9 +24,7 @@ const AuthLayout = (props: props)=>{
         if (!!username && !!id){
             // Router.push("/message")
             set_check_auth(true)
-            if (window.location.href.indexOf("message") == -1){
-                Router.push("message")
-            }
+            Router.push("/")
         }
         else {
             set_check_auth(false)

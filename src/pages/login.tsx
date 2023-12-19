@@ -25,7 +25,7 @@ const LoginPage = ()=>{
         if (_username.length > 3){
             localStorage.setItem("username", _username);
             localStorage.setItem("id", uuidv1())
-            Router.push("/message");
+            Router.push("/");
         }
         else{
             dispatch({type: "ALERT_ERROR", msg: "Tài khoản quá ngắn"})
