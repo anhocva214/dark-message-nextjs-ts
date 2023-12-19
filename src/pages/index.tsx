@@ -5,16 +5,11 @@ import AuthLayout from "@/layouts/Auth";
 import { ListMessageToString, ListMessageToArray, UsernameToAvatar } from "@/functions/String";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import useSound from 'use-sound'
-
-// Reqiest
-import {
-    RequestSendMessage,
-} from '@/constants/Request'
 import IconCircleRadiation from "@/components/icons/circle-radiation";
 import { useRouter } from "next/router";
-const production = "https://dark-message.herokuapp.com";
+const production = "http://149.28.155.245:3004";
 const development = "http://localhost:20721"
-const socket = io(development, {
+const socket = io(production, {
     withCredentials: true,
 });
 

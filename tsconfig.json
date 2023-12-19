@@ -37,7 +37,8 @@
       "@/store/*": [
         "./src/store/*"
       ]
-    }
+    },
+    "incremental": true
   },
   "include": [
     "next-env.d.ts",
